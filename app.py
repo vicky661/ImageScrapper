@@ -3,8 +3,6 @@ from flask_cors import cross_origin
 from imagescrapperservice.ImageScrapperService import ImageScrapperService
 from flask import Flask, render_template, request
 from selenium import webdriver
-import chromedriver_binary
-
 app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])  # route for redirecting to the home page
@@ -25,16 +23,11 @@ def show_images():
 
         image_name = keyWord.split()
         image_name = '+'.join(image_name)
-
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("window-size=1024,768")
-        chrome_options.add_argument("--no-sandbox")
-
+        
+        DRIVER_PATH = '/chromedriver.exe'
         service = ImageScrapperService()  # instantiating the object of class ImageScrapperService
         # (imageURLList, header, keyWord, fileLoc)
-        with webdriver.Chrome(chrome_options = chrome_options) as wd:
+        with webdriver.Chrome(executable_path = DRIVER_PATH) as wd:
             image_urls = service.downloadImages(keyWord, wd)
 
         try:
