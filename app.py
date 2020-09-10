@@ -24,7 +24,7 @@ def show_images():
     image_name = keyWord.split()
     image_name = '+'.join(image_name)
 
-    DRIVER_PATH = '/chromedriver.exe'
+    DRIVER_PATH = './chromedriver.exe'
 
     service = ImageScrapperService()  # instantiating the object of class ImageScrapperService
     # (imageURLList, header, keyWord, fileLoc)
