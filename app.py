@@ -15,36 +15,39 @@ def home():
 @app.route('/showImages',methods = ['POST']) # route to show the images on a webpage
 @cross_origin()
 def show_images():
-    if request.method == 'POST':
-        print("entered post")
-        keyWord = request.form['keyword']
-    else:
-        print("did not enter post")
-    print('printing = ' + keyWord)
-
-    image_name = keyWord.split()
-    image_name = '+'.join(image_name)
-
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("window-size=1024,768")
-    chrome_options.add_argument("--no-sandbox")
-
-    service = ImageScrapperService()  # instantiating the object of class ImageScrapperService
-    # (imageURLList, header, keyWord, fileLoc)
-    with webdriver.Chrome(chrome_options = chrome_options) as wd:
-        image_urls = service.downloadImages(keyWord, wd)
-
     try:
-        if(len(image_urls)>0): # if there are images present, show them on a wen UI
-            print(image_urls[0])
-            return render_template('showImage.html', urls=image_urls)
+        if request.method == 'POST':
+            print("entered post")
+            keyWord = request.form['keyword']
         else:
-            return "Please try with a different string" # show this error message if no images are present in the static folder
-    except Exception as e:
-        print('no Images found ', e)
-        return "Please try with a different string"
+            print("did not enter post")
+        print('printing = ' + keyWord)
+
+        image_name = keyWord.split()
+        image_name = '+'.join(image_name)
+
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("window-size=1024,768")
+        chrome_options.add_argument("--no-sandbox")
+
+        service = ImageScrapperService()  # instantiating the object of class ImageScrapperService
+        # (imageURLList, header, keyWord, fileLoc)
+        with webdriver.Chrome(chrome_options = chrome_options) as wd:
+            image_urls = service.downloadImages(keyWord, wd)
+
+        try:
+            if(len(image_urls)>0): # if there are images present, show them on a wen UI
+                print(image_urls[0])
+                return render_template('showImage.html', urls=image_urls)
+            else:
+                return "Please try with a different string" # show this error message if no images are present in the static folder
+        except Exception as e:
+            print('no Images found ', e)
+            return "Please try with a different string"
+    except:
+        return 'Internal error'
 
 if __name__ == "__main__":
     #app.run(host='127.0.0.1', port=5000, debug = True) # port to run on local machine
