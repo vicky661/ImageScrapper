@@ -3,6 +3,8 @@ from flask_cors import cross_origin
 from imagescrapperservice.ImageScrapperService import ImageScrapperService
 from flask import Flask, render_template, request
 from selenium import webdriver
+import os
+
 app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])  # route for redirecting to the home page
@@ -27,8 +29,13 @@ def show_images():
         DRIVER_PATH = '/chromedriver.exe'
         service = ImageScrapperService()  # instantiating the object of class ImageScrapperService
         # (imageURLList, header, keyWord, fileLoc)
-        with webdriver.Chrome(executable_path = DRIVER_PATH) as wd:
-            image_urls = service.downloadImages(keyWord, wd)
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--no-sandbox")
+        wd = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+        image_urls = service.downloadImages(keyWord, wd)
 
         try:
             if(len(image_urls)>0): # if there are images present, show them on a wen UI
